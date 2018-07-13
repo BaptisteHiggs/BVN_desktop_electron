@@ -12,7 +12,8 @@
     "dist": "build",
     "build": "build --win",
     "ship": "build --win -p always",
-    "install": "electron-rebuild"
+    "install": "electron-rebuild",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
