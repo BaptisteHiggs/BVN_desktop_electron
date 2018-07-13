@@ -3,17 +3,27 @@
 const remote = require('electron').remote;
 const schedule = require('node-schedule');
 
-/** extract just the sensor velue */
+
+/**
+ * extract just the sensor value
+ * @param {object} dataPair
+ * @return {number} The value
+ */
 function getValue(dataPair) {
     return dataPair['value'];
 }
 
-const moment = require('moment'); 
-/** extract just the timestamp */
+const moment = require('moment');
+/**
+ * extract just the timestamp
+ *
+ * @param {object} dataPair
+ * @return {string} iso formatted timestamp
+ */
 function getTime(dataPair) {
     let eTime = dataPair['timeStamp'];
     let stamp = moment(eTime).toISOString(true);
-    //Tried .format('GGGG: h:mm:ss.SS');//h:mm:ss.SSSS, but it freaked out!
+    // Tried .format('GGGG: h:mm:ss.SS');//h:mm:ss.SSSS, but it freaked out!
     return stamp;
 }
 
@@ -21,7 +31,7 @@ function getTime(dataPair) {
  * Converts the data in the buffer into the format that the graph wants
  *
  * @param {*} buffer List of object emitted by the sensors
- * @return a list of objects in graph format
+ * @return {Array.<Object>} a list of objects in graph format
  */
 function getData(buffer) {
     // get data from buffer

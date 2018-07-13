@@ -37,4 +37,4 @@ function maximiseWindow() {
     };
 }
 
-console.log("I AM IN SCRIPT!!!")
+console.log('I AM IN SCRIPT!!!');

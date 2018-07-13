@@ -19,29 +19,52 @@ function decodeData(d) {
 }
 
 
-function getDriveLetterOfCPE() { 
+/**
+ * Finds the drive letter in the output table, formatted like this:
+ *
+ * DeviceID DriveType ProviderName VolumeName Size         FreeSpace
+ * -------- --------- ------------ ---------- ----         ---------
+ * C:       3                      OS         498598932480 432367546368
+ * D:       2                      CIRCUITPY  2072576      1546240
+ * E:       2
+ *
+ * @param {string} table
+ * @param {string} volName The volume name to search for
+ * @return {string} Single letter drive letter
+ */
+function parseOutDriveLetter(table, volName) {
+    let lines = table.split('\n');
+    let cpeLine = lines.filter((line) => line.indexOf(volName) != -1);
+    let parts = cpeLine[0].split(/\s+/);
+    let driveLetter = parts[0][0];
+    return driveLetter;
+    /* This isn't actually needed, could just pull the first letter
+        of the line. This could be a bit more robust if I looked for
+        the part with the colon. */
+}
+
+/**
+ * Looks for the CPE and works out its drive letter
+ *
+ * @return {string} Single letter drive letter
+ */
+function getDriveLetterOfCPE() {
     return new Promise((resolve, reject) => {
         let ps = new shell({
         executionPolicy: 'Bypass',
-        noProfile: true
+        noProfile: true,
         });
-        
-        ps.addCommand('Get-CimInstance Win32_logicaldisk')
+
+        ps.addCommand('Get-CimInstance Win32_logicaldisk');
         ps.invoke()
-            .then(output => {
-                let lines = output.split("\n");
-                let cpeLine = lines.filter(line => line.indexOf("CIRCUITPY") != -1);
-                let parts = cpeLine[0].split(/\s+/);
-                let driveLetter = parts[0][0];
-                /* This isn't actually needed, could just pull the first letter 
-                    of the line. This could be a bit more robust if I looked for 
-                    the part with the colon. */
-                console.log("CPE drive letter:", driveLetter);
+            .then((output) => {
+                let driveLetter = parseOutDriveLetter(output, 'CIRCUITPY');
+                console.log('CPE drive letter:', driveLetter);
                 ps.dispose();
                 CPEdriveLetter = driveLetter;
                 resolve(driveLetter);
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
                 ps.dispose();
                 reject(err);
@@ -298,8 +321,8 @@ let fs = require('fs');
  * @param {string} colour
  */
 function setLightColour(colour) {
-    let CPEpath = path.join(CPEdriveLetter + ":", 'buffer.txt');
-    console.log("CPEdriveLetter:", CPEdriveLetter, "CPEpath:", CPEpath);
+    let CPEpath = path.join(CPEdriveLetter + ':', 'buffer.txt');
+    console.log('CPEdriveLetter:', CPEdriveLetter, 'CPEpath:', CPEpath);
     fs.writeFile(CPEpath, colour, function(err) {
         if (err) {
             return console.log(err);
@@ -307,7 +330,7 @@ function setLightColour(colour) {
         console.log('The colour was saved!', colour);
     });
 
-    fs.writeFile(CPEpath, "", function(err) {
+    fs.writeFile(CPEpath, '', function(err) {
         if (err) {
             return console.log(err);
         }
@@ -328,12 +351,12 @@ function handleLightStatus(status, item, window, event) {
     let colour;
     switch (status) {
         case 'highFocus':
-            colour = convert.rgb.hex(  15,  0, 0); // subdued red
+            colour = convert.rgb.hex( 15, 0, 0); // subdued red
             setLightColour(colour);
             // console.log("highFocus", item, window, event);
             break;
         case 'medFocus':
-            colour = convert.rgb.hex( 10,  5,  0); // orange
+            colour = convert.rgb.hex( 10, 5, 0); // orange
             setLightColour(colour);
             // console.log("medFocus", item, window, event);
             break;
@@ -363,15 +386,15 @@ function reportIsDev() {
     }
 }
 
-const {app, BrowserWindow, ipcMain, Menu, Tray} = require('electron');
+const {app, BrowserWindow, /* ipcMain,*/ Menu, Tray} = require('electron');
 const nativeImage = require('electron').nativeImage;
 const path = require('path');
-const url = require('url');
+// const url = require('url');
 
 // Auto update stuff
 const {autoUpdater} = require('electron-updater');
-const appVersion = require('./package.json').version;
-const os = require('os').platform();
+// const appVersion = require('./package.json').version;
+// const os = require('os').platform();
 
 const isDev = require('electron-is-dev');
 reportIsDev();
@@ -379,10 +402,10 @@ reportIsDev();
 const SerialPort = require('serialport');
 
 const shell = require('node-powershell');
-let CPEdriveLetter = "X"; //Risk of a race condition
+let CPEdriveLetter = 'X'; // Risk of a race condition
 getDriveLetterOfCPE()
-    .then(  d=>CPEdriveLetter=d)
-    .catch( e=>console.log(e)  );
+    .then( (d)=>CPEdriveLetter=d)
+    .catch( (e)=>console.log(e) );
 
 
 const timeToKeepMS = 5 * 1000; // in milliseconds
