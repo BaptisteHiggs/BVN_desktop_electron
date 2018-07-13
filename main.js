@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Takes data directly from the CPE, formats it
  * and time stamps it in a format for the buffer.
@@ -211,7 +213,7 @@ function boot() {
 
     const iconPath = path.join(__dirname, 'tray_icon.png');
     const trayIcon = nativeImage.createFromPath(iconPath);
-    tray = new Tray(trayIcon);
+    let tray = new Tray(trayIcon);
     // https://electronjs.org/docs/api/tray There's loads of stuff this can do!
     const contextMenu = Menu.buildFromTemplate([
         {label: 'Show',

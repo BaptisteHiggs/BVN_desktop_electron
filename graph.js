@@ -1,3 +1,5 @@
+'use strict';
+
 const remote = require('electron').remote;
 const schedule = require('node-schedule');
 
