@@ -38,7 +38,7 @@
     "color-convert": "^1.9.2",
     "drivelist": "^6.3.0",
     "electron-is-dev": "^0.3.0",
-    "electron-prebuilt": "^1.4.13",
+    "electron": "^1.4.13",
     "electron-rebuild": "^1.8.1",
     "electron-updater": "^2.21.10",
     "moment": "^2.22.2",
