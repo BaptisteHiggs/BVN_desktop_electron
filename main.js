@@ -209,7 +209,7 @@ function boot() {
 
     global.hideNotClose = true;
 
-    const iconPath = path.join(__dirname, 'icon.png');
+    const iconPath = path.join(__dirname, 'tray_icon.png');
     const trayIcon = nativeImage.createFromPath(iconPath);
     tray = new Tray(trayIcon);
     // https://electronjs.org/docs/api/tray There's loads of stuff this can do!
